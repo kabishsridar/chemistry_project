@@ -8,27 +8,44 @@ import io
 
 # Page Configuration
 st.set_page_config(
-    page_title="Erythromycin Analysis",
+    page_title="Erythromycin Stereochemistry Analysis",
     page_icon="🧪",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for Premium Look & Header Positioning
+# Custom CSS for Premium Look and Positioning
 st.markdown("""
 <style>
     .main {
         background-color: #0e1117;
         color: #ffffff;
     }
-    .student-info {
+    .top-right-info {
         position: absolute;
         top: -60px;
         right: 10px;
         text-align: right;
+        font-family: 'Inter', sans-serif;
         line-height: 1.2;
-        font-size: 0.9em;
-        opacity: 0.8;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+    }
+    .top-right-info p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #cccccc;
+    }
+    .top-right-info b {
+        color: #ff4b4b;
+    }
+    .center-title {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 30px;
     }
     .metric-card {
         background-color: #1e2130;
@@ -37,40 +54,37 @@ st.markdown("""
         border-left: 5px solid #ff4b4b;
         margin-bottom: 20px;
     }
-    .centered-title {
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 40px;
-    }
 </style>
+""", unsafe_allow_html=True)
 
-<div class="student-info">
-    <b>Name:</b> [YOUR NAME]<br>
-    <b>Class/Section:</b> [CLASS/SECTION]<br>
-    <b>Roll No:</b> [ROLL NO.]
+# Personal Information (Top Right)
+st.markdown("""
+<div class="top-right-info">
+    <p>Name: <b>Kabish Sridar</b></p>
+    <p>Class/Section: <b>AIML - A</b></p>
+    <p>Roll No: <b>RA2511026050018</b></p>
 </div>
 """, unsafe_allow_html=True)
 
-# Main Title (Top Middle)
-st.markdown("<h1 class='centered-title'>Erythromycin Chiral Center Analysis</h1>", unsafe_allow_html=True)
+# Middle Top Header
+st.markdown("<div class='center-title'><h1>Erythromycin Analysis</h1><p>Molecular Stereochemistry and Chiral Center Mapping</p></div>", unsafe_allow_html=True)
 
-# Hardcoded Erythromycin SMILES
-ERYTHROMYCIN_SMILES = "CC[C@H]1[C@@H](C)[C@@H](O)[C@H](OC(=O)[C@H](C)[C@@H](O)[C@H](C)O)[C@@H](C)[C@@H](O)[C@H](C)O[C@H]2[C@H](O)[C@@H](C)O[C@@H](O[C@@H]3[C@H](C)[C@@H](O)[C@H](C)O[C@H]3O)[C@H](O)[C@H]2O[C@@H]1C"
+# Fixed Molecule: Erythromycin
+erythromycin_smiles = "CC[C@H]1[C@@H](C)[C@@H](O)[C@H](OC(=O)[C@H](C)[C@@H](O)[C@H](C)O)[C@@H](C)[C@@H](O)[C@H](C)O[C@H]2[C@H](O)[C@@H](C)O[C@@H](O[C@@H]3[C@H](C)[C@@H](O)[C@H](C)O[C@H]3O)[C@H](O)[C@H]2O[C@@H]1C"
 
 try:
-    # Create molecule
-    mol = Chem.MolFromSmiles(ERYTHROMYCIN_SMILES)
+    mol = Chem.MolFromSmiles(erythromycin_smiles)
     
     if mol:
-        # 1. Molecule Visualization & Summary
-        col1, col2 = st.columns([1, 1])
+        # 1. Visualization and Summary
+        col1, col2 = st.columns([1.2, 1])
         
         with col1:
-            st.subheader("Chemical Structure")
-            img = Draw.MolToImage(mol, size=(600, 400), kekulize=True)
-            st.image(img, use_container_width=True, caption="2D Structure of Erythromycin")
+            st.subheader("2D Chemical Structure")
+            img = Draw.MolToImage(mol, size=(800, 500), kekulize=True)
+            st.image(img, use_container_width=True, caption="Structural representation of Erythromycin")
 
-        # 2. Chiral Center Calculation
+        # 2. Calculation
         mol_with_hs = Chem.AddHs(mol)
         Chem.AssignStereochemistry(mol_with_hs, force=True, cleanIt=True)
         chiral_centers = Chem.FindMolChiralCenters(
@@ -80,25 +94,26 @@ try:
         )
         
         with col2:
-            st.subheader("Statistical Summary")
+            st.subheader("Molecular Profile")
             st.markdown(f"""
             <div class="metric-card">
                 <h2 style='margin:0; color:#ff4b4b;'>{len(chiral_centers)}</h2>
-                <p style='margin:0; opacity:0.8;'>Total Chiral Centers Detected</p>
+                <p style='margin:0; opacity:0.8;'>Stereocenters (Chiral Centers)</p>
             </div>
             """, unsafe_allow_html=True)
             
-            # Basic Properties
+            # Descriptors
             mw = Chem.rdMolDescriptors.CalcExactMolWt(mol)
             formula = Chem.rdMolDescriptors.CalcMolFormula(mol)
             
-            st.write(f"**Formula:** {formula}")
-            st.write(f"**Molecular Weight:** {mw:.2f} g/mol")
+            st.info(f"**Chemical Formula:** {formula}")
+            st.info(f"**Exact Mass:** {mw:.4f} u")
+            st.success("Analysis complete. Chiral mapping generated below.")
 
         st.markdown("---")
         
         # 3. Detailed Results
-        st.subheader("Detailed Chiral Center Mapping")
+        st.subheader("Chiral Centers Details (Atom Map)")
         if len(chiral_centers) > 0:
             data = []
             for idx, config in chiral_centers:
@@ -106,20 +121,22 @@ try:
                 element = atom.GetSymbol()
                 data.append({
                     "Atom Index": idx,
-                    "Atom Element": element,
-                    "Stereo Configuration (R/S)": config
+                    "Atom Symbol": element,
+                    "Config (R/S)": config
                 })
             
             df = pd.DataFrame(data)
-            st.table(df)
+            # Center the table slightly for aesthetic
+            c1, c2, c3 = st.columns([1, 4, 1])
+            with c2:
+                st.dataframe(df, use_container_width=True, hide_index=True)
+        else:
+            st.warning("No chiral centers identified for this configuration.")
 
 except Exception as e:
-    st.error(f"Error processing molecule details: {str(e)}")
+    st.error(f"Critical Error in Molecular Engine: {str(e)}")
 
-# Footer
+# Minimal Footer
+st.markdown("<br><br>", unsafe_allow_html=True)
 st.markdown("---")
-st.caption("Chemistry Project | Powered by RDKit & Streamlit")
-
-# Footer
-st.markdown("---")
-st.caption("Powered by RDKit & Streamlit | Chemistry Project v2")
+st.caption("Chemistry Project Submission | Powered by RDKit Stereochemistry Engine")
