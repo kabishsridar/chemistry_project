@@ -70,7 +70,7 @@ st.markdown("""
 st.markdown("<div class='center-title'><h1>Eribulin Analysis</h1><p>Molecular Stereochemistry and Chiral Center Mapping</p></div>", unsafe_allow_html=True)
 
 # Fixed Molecule: Eribulin
-eribulin_smiles = "C[C@H]1CC[C@H]2CC[C@@H]3[C@](=C)(C[C@H](O3)CC[C@]45C[C@@H]6[C@H](O4)[C@H]7[C@H](O6)[C@H](O5)[C@@H]8[C@H](O7)CC[C@H](O8)CC(=O)C[C@H]9[C@H](CC([C@H]1=C)O2)O[C@@H]([C@H]9OC)C[C@@H](CN)O"
+eribulin_smiles = "C[C@@H]1C[C@@H]2CC[C@H]3C(=C)C[C@H](CC[C@@]45C[C@@H]6[C@@H]([C@@]7([H])[C@H]([C@H]([C@]8([H])[C@]([H])(CC[C@H](CC(=O)C[C@H]9[C@]([H])(C[C@H](C1=C)O2)O[C@H](C[C@@H](CN)O)[C@@H]9OC)O8)O7)O4)O6)O5)O3"
 
 try:
     mol = Chem.MolFromSmiles(eribulin_smiles)
