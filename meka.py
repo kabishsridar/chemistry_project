@@ -23,7 +23,7 @@ st.markdown("""
     }
     .top-right-info {
         position: absolute;
-        top: -60px;
+        top: 20px;
         right: 10px;
         text-align: right;
         font-family: 'Inter', sans-serif;
